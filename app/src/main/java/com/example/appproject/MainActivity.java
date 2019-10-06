@@ -3,8 +3,10 @@ package com.example.appproject;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -125,11 +128,18 @@ public class MainActivity extends AppCompatActivity {
                                         // If user click no
                                         // then dialog box is canceled.
                                         is_for_active = false;
-                                        ctimer.cancel();
+                                        if(ctimer!=null)
+                                        {
+                                            ctimer.cancel();
+                                        }
                                         dialog.cancel();
                                     }
                                 });
                 alertDialog = builder.create();
+                if(savedInstanceState.getString("Visibility")=="VISIBLE")
+                {
+                    Dialog_for.findViewById(R.id.layout1).setVisibility(View.VISIBLE);
+                }
                 alertDialog.show();
                 is_for_active = alertDialog.isShowing();
                 Button b = Dialog_for.findViewById(R.id.Send);
@@ -238,7 +248,9 @@ public class MainActivity extends AppCompatActivity {
                                 // If user click no
                                 // then dialog box is canceled.
                                 is_for_active = false;
-                                ctimer.cancel();
+                                if(ctimer!=null){
+                                    ctimer.cancel();
+                                }
                                 dialog.cancel();
                             }
                         });
@@ -308,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
         alertDialog = builder.create();
         alertDialog.show();
         is_cpass_active = alertDialog.isShowing();
-       
+
         Button b = Dialog_ch.findViewById(R.id.cpass_sub);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -349,6 +361,15 @@ public class MainActivity extends AppCompatActivity {
             t = Dialog_for.findViewById(R.id.otp);
             value = t.getText().toString();
             state.putString("otp", value);
+            LinearLayout l=Dialog_for.findViewById(R.id.layout1);
+            if(l.getVisibility()==View.VISIBLE)
+            {
+                state.putString("Visibility","VISIBLE");
+            }
+            else
+            {
+                state.putString("Visibility","GONE");
+            }
 
 
         }
