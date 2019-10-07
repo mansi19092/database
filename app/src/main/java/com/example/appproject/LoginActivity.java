@@ -3,10 +3,8 @@ package com.example.appproject;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -17,7 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     TextView tx;
     EditText t;
     String user;
@@ -29,16 +27,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
         if(savedInstanceState != null){
             if(savedInstanceState.getBoolean("Dialog") == true)
             {
                 LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.dialog, null);
+                View promptsView = li.inflate(R.layout.register_dialog, null);
                 Dialog_reg = promptsView;
                 AlertDialog.Builder builder
                         = new AlertDialog
-                        .Builder(MainActivity.this);
+                        .Builder(LoginActivity.this);
                 builder.setTitle("Register");
                 builder.setCancelable(false);
                 builder.setView(promptsView);
@@ -74,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                                     {
 
                                         // If user click no
-                                        // then dialog box is canceled.
+                                        // then register_dialog box is canceled.
                                         is_Reg_active = false;
                                         dialog.cancel();
                                     }
@@ -94,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (savedInstanceState.getBoolean("is_for_active") == true){
                 LayoutInflater li = LayoutInflater.from(context);
-                final View promptsView = li.inflate(R.layout.for_pass, null);
+                final View promptsView = li.inflate(R.layout.forgot_pass, null);
                 Dialog_for = promptsView;
                 tx = Dialog_for.findViewById(R.id.timer);
                 tx.setText(savedInstanceState.getString("timer"));
@@ -105,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder
                         = new AlertDialog
-                        .Builder(MainActivity.this);
+                        .Builder(LoginActivity.this);
                 builder.setTitle("OTP Request");
                 builder.setCancelable(false);
                 builder.setView(promptsView);
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                                     {
 
                                         // If user click no
-                                        // then dialog box is canceled.
+                                        // then register_dialog box is canceled.
                                         is_for_active = false;
                                         if(ctimer!=null)
                                         {
@@ -178,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 t.setText(savedInstanceState.getString("cpass2") );
                 AlertDialog.Builder builder
                         = new AlertDialog
-                        .Builder(MainActivity.this);
+                        .Builder(LoginActivity.this);
                 builder.setTitle("Reset Password");
                 builder.setCancelable(false);
                 builder.setView(promptsView);
@@ -199,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                                     {
 
                                         // If user click no
-                                        // then dialog box is canceled.
+                                        // then register_dialog box is canceled.
                                         is_cpass_active = false;
                                         dialog.cancel();
                                     }
@@ -221,11 +219,11 @@ public class MainActivity extends AppCompatActivity {
     }
     protected void forgot(View v){
         LayoutInflater li = LayoutInflater.from(context);
-        final View promptsView = li.inflate(R.layout.for_pass, null);
+        final View promptsView = li.inflate(R.layout.forgot_pass, null);
         Dialog_for = promptsView;
         AlertDialog.Builder builder
                 = new AlertDialog
-                .Builder(MainActivity.this);
+                .Builder(LoginActivity.this);
         builder.setTitle("OTP Request");
         builder.setCancelable(false);
         builder.setView(promptsView);
@@ -246,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                             {
 
                                 // If user click no
-                                // then dialog box is canceled.
+                                // then register_dialog box is canceled.
                                 is_for_active = false;
                                 if(ctimer!=null){
                                     ctimer.cancel();
@@ -291,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
         Dialog_ch = promptsView;
         AlertDialog.Builder builder
                 = new AlertDialog
-                .Builder(MainActivity.this);
+                .Builder(LoginActivity.this);
         builder.setTitle("Reset Password");
         builder.setCancelable(false);
         builder.setView(promptsView);
@@ -312,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
                             {
 
                                 // If user click no
-                                // then dialog box is canceled.
+                                // then register_dialog box is canceled.
                                 is_cpass_active = false;
                                 dialog.cancel();
                             }
@@ -392,11 +390,11 @@ public class MainActivity extends AppCompatActivity {
 
     protected void Register(View view){
         LayoutInflater li = LayoutInflater.from(context);
-        final View promptsView = li.inflate(R.layout.dialog, null);
+        final View promptsView = li.inflate(R.layout.register_dialog, null);
         Dialog_reg = promptsView;
         AlertDialog.Builder builder
                 = new AlertDialog
-                .Builder(MainActivity.this);
+                .Builder(LoginActivity.this);
         builder.setTitle("Register");
         builder.setCancelable(false);
         builder.setView(promptsView);
@@ -430,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
                             {
 
                                 // If user click no
-                                // then dialog box is canceled.
+                                // then register_dialog box is canceled.
                                 is_Reg_active = false;
                                 dialog.cancel();
                             }
