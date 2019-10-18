@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class LoginActivity extends AppCompatActivity {
     TextView tx;
     EditText t;
@@ -24,10 +26,12 @@ public class LoginActivity extends AppCompatActivity {
     final Context context = this;
     AlertDialog alertDialog;
     boolean is_Reg_active = false,is_for_active = false,is_cpass_active;
+    FirebaseAuth mFirebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mFirebaseAuth=FirebaseAuth.getInstance();
         if(savedInstanceState != null){
             if(savedInstanceState.getBoolean("Dialog") == true)
             {
