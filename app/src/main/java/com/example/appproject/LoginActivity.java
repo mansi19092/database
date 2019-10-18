@@ -1,12 +1,15 @@
 package com.example.appproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +17,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
     TextView tx;
-    EditText t;
-    String user;
+    EditText t,Eemail,Eusername,Epassword,Econfirmpassword;
+    Button loginbtn;
+    Button cancelbtn;
+
     View Dialog_reg,Dialog_for,Dialog_ch;
     CountDownTimer ctimer;
     final Context context = this;
@@ -32,6 +42,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mFirebaseAuth=FirebaseAuth.getInstance();
+         Eusername=findViewById(R.id.username);
+         Epassword=findViewById(R.id.password);
+         Econfirmpassword=findViewById(R.id.confirm);
+         Eemail=findViewById(R.id.email);
+         loginbtn=findViewById(R.id.loginBtn);
+
+
         if(savedInstanceState != null){
             if(savedInstanceState.getBoolean("Dialog") == true)
             {
@@ -52,14 +69,69 @@ public class LoginActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onClick(DialogInterface dialog,
-                                                        int which)
-                                    {
+                                                        int which) {
                                         is_Reg_active = false;
                                         dialog.cancel();
+                                        String Semail, Susername, Spass, Sconfirmpassword;
+                                        t = Dialog_reg.findViewById(R.id.username);
+                                        Susername = t.getText().toString();
+                                        t = Dialog_reg.findViewById(R.id.password);
+                                        Spass = t.getText().toString();
+                                        t = Dialog_reg.findViewById(R.id.confirm);
+                                        Sconfirmpassword = t.getText().toString();
+                                        t = Dialog_reg.findViewById(R.id.email);
+                                        Semail = t.getText().toString();
+
 
                                         //Save data
+
+
+                                        //checking if email and passwords are empty
+                                        if (Susername.isEmpty()) {
+                                            Eusername.setError("please enter username");    //check email is wriiten or not
+                                            Eusername.requestFocus();
+                                        }
+                                        if (Semail.isEmpty()) {
+                                            Eemail.setError("please enter email id");    //check email is wriiten or not
+                                            Eemail.requestFocus();
+                                        }
+
+                                        if (Spass.isEmpty()) {
+                                            Epassword.setError("please enter password");    //check email is wriiten or not
+                                            Epassword.requestFocus();
+                                        }
+                                        if (Spass != Sconfirmpassword) {
+                                            Econfirmpassword.setError("password dont match");    //check email is wriiten or not
+                                            Econfirmpassword.requestFocus();
+                                        }
+                                        //if the email and password are not empty
+                                        else {
+
+
+                                            //creating a new user i.e registration
+                                            mFirebaseAuth.createUserWithEmailAndPassword(Semail, Spass)
+                                                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                                            //checking if success
+                                                            if (task.isSuccessful()) {
+                                                                Toast.makeText(LoginActivity.this, "Registration successful", Toast.LENGTH_LONG).show();
+                                                                finish();
+
+                                                            } else {
+                                                                //display some message here
+                                                                Toast.makeText(LoginActivity.this, "Registration Error", Toast.LENGTH_LONG).show();
+                                                            }
+
+                                                        }
+                                                    });
+                                        }
+
+
                                     }
                                 });
+
 
                 // Set the Negative button with No name
                 // OnClickListener method is use
@@ -81,6 +153,8 @@ public class LoginActivity extends AppCompatActivity {
                                         dialog.cancel();
                                     }
                                 });
+
+
                 alertDialog = builder.create();
                 alertDialog.show();
                 t =  promptsView.findViewById(R.id.username);
@@ -220,7 +294,47 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         }
+        //login authentication
+        loginbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String Semail = Eemail.getText().toString();
+                String Spass=Epassword.getText().toString();
+                if(Semail.isEmpty())
+                {
+                    Eemail.setError("please enter email id");    //check email is wriiten or not
+                    Eemail.requestFocus();
+
+                }
+                if(Spass.isEmpty())                                //check pass is wriiten or not
+                {
+                    Epassword.setError("please enter password");
+                    Epassword.requestFocus();
+                }
+               else                                                 //its a user.
+                {
+                    mFirebaseAuth.signInWithEmailAndPassword(Semail,Spass).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(!task.isSuccessful())
+                            {
+                                Toast.makeText(LoginActivity.this, getString(R.string.failedlogin), Toast.LENGTH_LONG).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(LoginActivity.this,"login successful", Toast.LENGTH_LONG).show();
+
+                            }
+
+                        }
+                    });
+                }
+
+
+            }
+        });
     }
+
     protected void forgot(View v){
         LayoutInflater li = LayoutInflater.from(context);
         final View promptsView = li.inflate(R.layout.forgot_pass, null);
@@ -335,19 +449,19 @@ public class LoginActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
         if(is_Reg_active == true){
-            String value;
+            String EMAIL,username,password,confirmpassword ;
             t = Dialog_reg.findViewById(R.id.username);
-            value = t.getText().toString();
-            state.putString("user",value);
+            username = t.getText().toString();
+            state.putString("user",username);
             t = Dialog_reg.findViewById(R.id.password);
-            value = t.getText().toString();
-            state.putString("pass", value);
+            password = t.getText().toString();
+            state.putString("pass", password);
             t = Dialog_reg.findViewById(R.id.confirm);
-            value = t.getText().toString();
-            state.putString("cpass", value);
+            confirmpassword = t.getText().toString();
+            state.putString("cpass", confirmpassword);
             t = Dialog_reg.findViewById(R.id.email);
-            value = t.getText().toString();
-            state.putString("email", value);
+            EMAIL = t.getText().toString();
+            state.putString("email", EMAIL);
 
 
 
@@ -413,6 +527,18 @@ public class LoginActivity extends AppCompatActivity {
                                                 int which)
                             {
                                 is_Reg_active=false;
+                                String EMAIL,username,password,confirmpassword;
+                                t = Dialog_reg.findViewById(R.id.username);
+                                username = t.getText().toString();
+                                t = Dialog_reg.findViewById(R.id.password);
+                                password = t.getText().toString();
+                                t = Dialog_reg.findViewById(R.id.confirm);
+                                confirmpassword = t.getText().toString();
+                                t = Dialog_reg.findViewById(R.id.email);
+                                EMAIL = t.getText().toString();
+
+
+
                                 //Save data
                             }
                         });

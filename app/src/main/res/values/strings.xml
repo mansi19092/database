@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">appproject</string>
+    <string name="minpass">too short min is 6</string>
+    <string name="failedlogin">failedlofin</string>
 </resources>
