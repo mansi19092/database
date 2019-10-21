@@ -7,7 +7,7 @@
     android:padding="15dp" >
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/username_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Username"
@@ -18,7 +18,18 @@
 
     </EditText>
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/email_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Email Address"
+        android:inputType="textEmailAddress"
+        android:padding="10dp">
+
+
+
+    </EditText>
+    <EditText
+        android:id="@+id/password_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Password"
@@ -29,7 +40,7 @@
 
     </EditText>
     <EditText
-        android:id="@+id/confirm"
+        android:id="@+id/confirm_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Confirm Password"
@@ -39,15 +50,18 @@
 
 
     </EditText>
-    <EditText
-        android:id="@+id/email"
+
+    <Button
+        android:id="@+id/button_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Email Address"
-        android:padding="10dp">
+        android:text="Submit" />
 
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="cancel" />
 
-
-    </EditText>
 
 </LinearLayout>
