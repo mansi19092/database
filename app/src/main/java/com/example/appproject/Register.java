@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
     EditText editUsername, editPassword_Register, editConfirmpassword, editEmail_Register;
@@ -30,15 +32,17 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         editPassword_Register = (EditText) findViewById(R.id.password_register);
         editConfirmpassword = (EditText) findViewById(R.id.confirm_register);
         editEmail_Register = (EditText) findViewById(R.id.email_register);
+        Button submit,cancel;
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        findViewById(R.id.button_submit).setOnClickListener(this);
-        findViewById(R.id.button_cancel).setOnClickListener(this);
+       // submit=findViewById(R.id.button_submit).setOnClickListener(this);
+       // cancel=findViewById(R.id.button_cancel).setOnClickListener(this);
     }
 
     private void registeruser() {
-        String Username, Password_Register, Confirmpassword, Email_Register;
-        // Boolean Credentials = false;
+        final String Username, Email_Register;
+        String Password_Register,Confirmpassword;
+
         Username = editUsername.getText().toString().trim();
         Password_Register = editPassword_Register.getText().toString().trim();
         Confirmpassword = editConfirmpassword.getText().toString().trim();
@@ -48,14 +52,12 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         if (Email_Register.isEmpty()) {
             editEmail_Register.setError("Email is required");
             editEmail_Register.requestFocus();
-            //   Credentials = true;
             return;
 
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(Email_Register).matches()) {
             editEmail_Register.setError("Enter valid emailid");
             editEmail_Register.requestFocus();
-            //  Credentials = true;
             return;
         }
         if (Password_Register.isEmpty()) {
@@ -76,12 +78,12 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
             //Credentials = true;
             return;
         }
-       /* if (Confirmpassword != Password_Register) {
+       if (!( Password_Register.equals(Confirmpassword))) {
             editConfirmpassword.setError("Password & confirm password must be same");
            editConfirmpassword.requestFocus();
          //  Credentials = true;
             return;
-       } */
+       }
 
 
        mAuth.createUserWithEmailAndPassword(Email_Register,Password_Register).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -91,7 +93,27 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                {   finish();
 
                    Toast.makeText(getApplicationContext(),"User Regsitered Successfully",Toast.LENGTH_SHORT).show();
-                   startActivity(new Intent(Register.this,check.class));
+                   //Store the data to database
+                   Userdetails user= new Userdetails(Username, Email_Register);
+                   FirebaseDatabase.getInstance().getReference("User")
+                       .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                           .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                       @Override
+                       public void onComplete(@NonNull Task<Void> task) {
+                           if(task.isSuccessful())
+                           {
+                               Toast.makeText(Register.this,"Successfully registrated",Toast.LENGTH_LONG).show();
+                           }
+                           else
+                           {
+                               //failure
+                           }
+                       }
+                   });
+
+
+
+                   startActivity(new Intent(Register.this,login.class));
                }
                else
                {
@@ -114,11 +136,12 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         {
             case R.id.button_submit:
                 registeruser();
-              //  startActivity(new Intent(Register.this,login.class));
+               startActivity(new Intent(Register.this,login.class));
                 break;
             case R.id.button_cancel:
                 startActivity(new Intent(this,login.class));
                 break;
+
         }
     }
 }
